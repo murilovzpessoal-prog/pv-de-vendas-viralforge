@@ -1,14 +1,5 @@
 import React, { useEffect } from 'react';
 
-// Add VTurb types for TypeScript
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'vturb-smartplayer': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & { id: string };
-    }
-  }
-}
-
 const Hero: React.FC = () => {
   /* ── Load VTurb SmartPlayer Script ── */
   useEffect(() => {
