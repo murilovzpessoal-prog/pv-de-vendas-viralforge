@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 
 const samples = [
   { video: 'https://zayraai.com/videos/motion-zaza.mp4' },
@@ -6,7 +6,58 @@ const samples = [
   { video: 'https://zayraai.com/videos/motion-cara.mp4' },
 ];
 
+const voices = [
+  { 
+    title: 'Voz Masculina Profissional', 
+    sub: 'Tom claro e objetivo para apresentações',
+    audioUrl: '/audio/voz-masculina.mp3'
+  },
+  { 
+    title: 'Voz Feminina Natural', 
+    sub: 'Expressiva e envolvente para narrações',
+    audioUrl: '/audio/voz-feminina.mp3'
+  },
+  { 
+    title: 'Narração Dinâmica', 
+    sub: 'Ideal para comerciais e anúncios',
+    audioUrl: '/audio/narracao.mp3'
+  }
+];
+
 const Expressions: React.FC = () => {
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const toggleAudio = (index: number, url: string) => {
+    if (!url) return;
+
+    if (playingIndex === index) {
+      // Se clicar no mesmo e estiver tocando, pausa
+      audioRef.current?.pause();
+      setPlayingIndex(null);
+    } else {
+      // Se tiver outro tocando, para ele
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+
+      // Cria novo áudio ou atualiza o atual
+      if (!audioRef.current) {
+        audioRef.current = new Audio(url);
+      } else {
+        audioRef.current.src = url;
+      }
+
+      audioRef.current.play();
+      setPlayingIndex(index);
+
+      // Reset quando o áudio acabar
+      audioRef.current.onended = () => {
+        setPlayingIndex(null);
+      };
+    }
+  };
+
   return (
     <section className="py-6 md:py-32 bg-transparent relative overflow-hidden">
       <div className="container mx-auto px-6">
@@ -67,21 +118,47 @@ const Expressions: React.FC = () => {
            </p>
 
            <div className="max-w-2xl mx-auto space-y-4">
-              {[
-                { title: 'Voz Masculina Profissional', sub: 'Tom claro e objetivo para apresentações' },
-                { title: 'Voz Feminina Natural', sub: 'Expressiva e envolvente para narrações' },
-                { title: 'Narração Dinâmica', sub: 'Ideal para comerciais e anúncios' }
-              ].map((v, i) => (
-                <div key={i} className="glass-card p-6 flex items-center gap-6 group hover:border-brand-primary/30 transition-all cursor-pointer rounded-[24px]">
-                   <div className="w-14 h-14 rounded-full glass-container flex items-center justify-center text-white/80 group-hover:bg-brand-primary group-hover:text-black transition-all border border-white/5">
-                      <svg className="w-4 h-4 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
+              {voices.map((v, i) => (
+                <div 
+                  key={i} 
+                  onClick={() => toggleAudio(i, v.audioUrl)}
+                  className={`glass-card p-6 flex items-center gap-6 group hover:border-brand-primary/30 transition-all cursor-pointer rounded-[24px] ${
+                    playingIndex === i ? 'border-brand-primary/40 bg-brand-primary/5 shadow-[0_0_40px_rgba(139,92,246,0.1)]' : ''
+                  }`}
+                >
+                   <div className={`w-14 h-14 rounded-full glass-container flex items-center justify-center text-white/80 transition-all border border-white/5 ${
+                     playingIndex === i ? 'bg-brand-primary text-black scale-110' : 'group-hover:bg-brand-primary group-hover:text-black'
+                   }`}>
+                      {playingIndex === i ? (
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <rect x="6" y="4" width="4" height="16" />
+                          <rect x="14" y="4" width="4" height="16" />
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      )}
                    </div>
                    <div className="text-left">
-                      <h4 className="text-lg font-black tracking-tight font-display text-white">{v.title}</h4>
+                      <h4 className={`text-lg font-black tracking-tight font-display transition-colors ${
+                        playingIndex === i ? 'text-brand-primary' : 'text-white'
+                      }`}>{v.title}</h4>
                       <p className="text-white/40 text-xs font-medium">{v.sub}</p>
                    </div>
+                   
+                   {/* Animated Sound Wave (Visible when playing) */}
+                   {playingIndex === i && (
+                     <div className="ml-auto flex items-center gap-1 h-4">
+                       {[1, 2, 3, 4].map((bar) => (
+                         <div 
+                           key={bar}
+                           className="w-1 bg-brand-primary rounded-full animate-audio-bar"
+                           style={{ animationDelay: `${bar * 0.1}s` }}
+                         />
+                       ))}
+                     </div>
+                   )}
                 </div>
               ))}
            </div>

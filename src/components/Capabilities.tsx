@@ -114,9 +114,11 @@ const Capabilities: React.FC = () => {
              <p className="text-white/40 text-[14px] md:text-xl max-w-md lg:mx-0 mx-auto leading-relaxed font-medium mb-10 md:mb-12 px-4 md:px-0">
                 Copie o movimento de qualquer vídeo e coloque seu personagem no mesmo movimento. Crie vídeos virais em segundos.
              </p>
-             <button className="btn-premium px-10 py-5">
-                Saiba mais
-             </button>
+             <a href="https://viralforgeai.space/" target="_blank" rel="noopener noreferrer">
+               <button className="btn-premium px-10 py-5">
+                 Saiba mais
+               </button>
+             </a>
           </div>
           <div className="reveal delay-2 order-1 lg:order-2">
             <div className="relative aspect-[3/4] w-full max-w-md mx-auto rounded-[48px] overflow-hidden glass-container p-3 group">

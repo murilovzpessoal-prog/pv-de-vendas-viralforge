@@ -14,14 +14,16 @@ const BrandCTA: React.FC = () => {
           </p>
           
           <div className="flex flex-col items-center gap-6">
-            <button className="btn-premium px-12 py-5 text-lg group">
-              <span className="flex items-center gap-2">
-                Criar Conta Gratuitamente
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </span>
-            </button>
+            <a href="https://viralforgeai.space/" target="_blank" rel="noopener noreferrer">
+              <button className="btn-premium px-12 py-5 text-lg group">
+                <span className="flex items-center gap-2">
+                  Criar Conta Gratuitamente
+                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </span>
+              </button>
+            </a>
             <p className="text-white/20 text-xs font-medium tracking-tight">
               Sem cartão de crédito necessário para começar.
             </p>

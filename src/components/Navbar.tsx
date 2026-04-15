@@ -29,13 +29,15 @@ const Navbar: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4 md:gap-6 shrink-0">
-            <a href="#" className="text-[10px] md:text-xs font-bold text-white/60 hover:text-white transition-colors tracking-wide md:tracking-widest uppercase">
+            <a href="https://viralforgeai.space/" target="_blank" rel="noopener noreferrer" className="text-[10px] md:text-xs font-bold text-white/60 hover:text-white transition-colors tracking-wide md:tracking-widest uppercase">
               Entrar
             </a>
 
-            <button className="btn-premium px-3 py-1.5 md:px-8 md:py-3 text-[9px] md:text-[10px] tracking-wider md:tracking-[0.2em] whitespace-nowrap">
-              Começar Agora
-            </button>
+            <a href="https://viralforgeai.space/" target="_blank" rel="noopener noreferrer">
+              <button className="btn-premium px-3 py-1.5 md:px-8 md:py-3 text-[9px] md:text-[10px] tracking-wider md:tracking-[0.2em] whitespace-nowrap">
+                Começar Agora
+              </button>
+            </a>
           </div>
         </div>
       </div>

@@ -144,3 +144,12 @@
   display: flex;
   width: max-content;
 }
+
+@keyframes audio-bar {
+  0%, 100% { height: 4px; }
+  50% { height: 16px; }
+}
+
+.animate-audio-bar {
+  animation: audio-bar 0.8s ease-in-out infinite;
+}
