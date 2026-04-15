@@ -1,74 +1,31 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
+
+// Add VTurb types for TypeScript
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'vturb-smartplayer': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & { id: string };
+    }
+  }
+}
 
 const Hero: React.FC = () => {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const playerRef = useRef<any>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [hasSound, setHasSound] = useState(false);
-
-  /* ── load Vimeo SDK & init player ── */
+  /* ── Load VTurb SmartPlayer Script ── */
   useEffect(() => {
-    const initPlayer = () => {
-      if (!iframeRef.current || playerRef.current) return;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const Vimeo = (window as any).Vimeo;
-      if (!Vimeo) return;
-      const player = new Vimeo.Player(iframeRef.current);
-      playerRef.current = player;
-      player.on('play',  () => setIsPlaying(true));
-      player.on('pause', () => setIsPlaying(false));
-      player.on('ended', () => setIsPlaying(false));
-      player.setMuted(true).then(() => player.play()).catch(() => {});
-    };
+    const scriptId = "vturb-player-script";
+    if (document.getElementById(scriptId)) return;
 
-    if ((window as any).Vimeo) {
-      initPlayer();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://player.vimeo.com/api/player.js';
-    script.onload = initPlayer;
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.type = "text/javascript";
+    script.src = "https://scripts.converteai.net/9f104f3c-6dae-4e86-bc54-251dfbade0f0/players/69dfe713e537066c4a8b1bd3/v4/player.js";
+    script.async = true;
     document.head.appendChild(script);
+
     return () => {
-      if (script.parentNode) script.parentNode.removeChild(script);
+      // Optional: cleanup if needed, though usually not for global scripts
     };
   }, []);
-
-  const activateSound = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    // Hide overlay immediately — before any async work
-    setHasSound(true);
-    setIsPlaying(true);
-    const p = playerRef.current;
-    if (!p) return;
-    try {
-      await p.setVolume(1);
-      await p.setMuted(false);
-      await p.play();
-    } catch (_) { /* ignore */ }
-  };
-
-  const handleVideoClick = async () => {
-    const p = playerRef.current;
-    if (!p) return;
-    try {
-      if (!hasSound) {
-        setHasSound(true);
-        setIsPlaying(true);
-        await p.setVolume(1);
-        await p.setMuted(false);
-        await p.play();
-        return;
-      }
-      if (isPlaying) {
-        await p.pause();
-      } else {
-        await p.play();
-      }
-    } catch (_) { /* ignore */ }
-  };
 
   return (
     <section className="relative pt-24 md:pt-48 pb-8 md:pb-32 overflow-hidden">
@@ -142,99 +99,19 @@ const Hero: React.FC = () => {
             <div className="absolute inset-0 bg-brand-primary/20 blur-[100px] rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-1000 -z-10" />
 
             <div className="relative h-full w-full glass-container rounded-[40px] p-2 border border-white/10 group-hover:border-white/20 transition-all duration-1000 shadow-[0_0_50px_rgba(139,92,246,0.15)]">
-              {/* Clickable video area */}
-              <div
-                className="relative h-full w-full rounded-[32px] overflow-hidden bg-[#0A0A0B] cursor-pointer"
-                onClick={handleVideoClick}
-              >
-                <iframe
-                  ref={iframeRef}
-                  src="https://player.vimeo.com/video/1183455569?autoplay=1&muted=1&loop=1&background=1&quality=1080p"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  allowFullScreen
-                  style={{
-                    border: 'none',
-                    display: 'block',
-                    pointerEvents: 'none',
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    width: '100%',
-                    height: '100%',
-                    transform: 'translate(-50%, -50%) scale(1.4)',
-                    transformOrigin: 'center center',
-                  }}
-                />
-
-                {/* Play-with-sound overlay */}
-                {!hasSound && (
-                  <div
-                    className="absolute inset-0 flex flex-col items-center justify-center z-10"
-                    style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 55%)' }}
-                  >
-                    <button
-                      onClick={activateSound}
-                      aria-label="Assistir com som"
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}
-                    >
-                      {/* Pulsing ring + play button */}
-                      <span style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <span style={{
-                          position: 'absolute',
-                          width: '80px',
-                          height: '80px',
-                          borderRadius: '50%',
-                          background: 'rgba(255,255,255,0.15)',
-                          animation: 'ping 1.5s cubic-bezier(0,0,0.2,1) infinite',
-                        }} />
-                        <span style={{
-                          position: 'relative',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: '68px',
-                          height: '68px',
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #EC4899, #8B5CF6)',
-                          boxShadow: '0 0 40px rgba(139,92,246,0.6)',
-                        }}>
-                          <svg width="28" height="28" viewBox="0 0 24 24" fill="white" style={{ marginLeft: '4px' }}>
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        </span>
-                      </span>
-                      <span style={{
-                        color: 'white',
-                        fontSize: '11px',
-                        fontWeight: 900,
-                        letterSpacing: '0.25em',
-                        textTransform: 'uppercase',
-                        opacity: 0.9,
-                      }}>
-                        Assistir com som
-                      </span>
-                    </button>
-                  </div>
-                )}
-
-                {/* Pause indicator */}
-                {hasSound && !isPlaying && (
-                  <div style={{
-                    position: 'absolute', inset: 0,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    zIndex: 10, pointerEvents: 'none',
+              <div className="relative h-full w-full rounded-[32px] overflow-hidden bg-[#0A0A0B]">
+                {/* VTurb SmartPlayer Integration */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-full h-full" style={{ 
+                    // To handle horizontal videos in a vertical container without black bars,
+                    // we apply a scale transform similar to what we did for Vimeo.
+                    // VTurb injects an iframe that we want to zoom.
+                    transform: 'scale(1.4)',
+                    transformOrigin: 'center center'
                   }}>
-                    <span style={{
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      width: '60px', height: '60px', borderRadius: '50%',
-                      background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)',
-                    }}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                      </svg>
-                    </span>
+                    <vturb-smartplayer id="vid-69dfe713e537066c4a8b1bd3" />
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
